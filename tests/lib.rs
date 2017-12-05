@@ -9,6 +9,10 @@ mod tests {
     fn it_parses_dirs() {
         let paths : &'static[&'static str] = &["/usr/share/applications/"];
 
-        parse_dirs(paths);
+        let desktop_entries = parse_dirs(paths);
+
+        for desktop_entry in desktop_entries {
+            print!("{:?}", desktop_entry);
+        }
     }
 }
