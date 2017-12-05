@@ -7,7 +7,19 @@ use std::fs::File;
 use self::desktop_entry::{DesktopEntry, EntryType};
 use self::parse::{parse_entry_type, parse_if_starts_with};
 
-pub fn parse_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
+pub fn get_entries_in_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
+    return parse_dirs(paths);
+}
+
+pub fn get_application_entries_in_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
+    return parse_dirs(paths)
+        .into_iter()
+        .filter(|entry: &DesktopEntry|
+            entry.entry_type == EntryType::Application)
+        .collect();
+}
+
+fn parse_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
     let mut desktop_entries: Vec<DesktopEntry> = Vec::new();
 
     for path in paths {
@@ -18,7 +30,7 @@ pub fn parse_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
             if entry_path.is_file() {
                 match parse_file(&entry_path) {
                     Ok(entry) => desktop_entries.push(entry),
-                    Err(err) => println!("Error: {}", err)
+                    Err(_) => ()
                 }
             }
         }
