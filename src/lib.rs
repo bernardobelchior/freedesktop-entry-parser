@@ -1,4 +1,4 @@
-mod desktop_entry;
+pub mod desktop_entry;
 mod parse;
 
 use std::path::{Path, PathBuf};
@@ -11,11 +11,11 @@ pub fn get_entries_in_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> 
     return parse_dirs(paths);
 }
 
-pub fn get_application_entries_in_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
+pub fn get_entries_in_dirs_filtered_by(paths: &'static [&'static str], entry_type: EntryType) -> Vec<DesktopEntry> {
     return parse_dirs(paths)
         .into_iter()
         .filter(|entry: &DesktopEntry|
-            entry.entry_type == EntryType::Application)
+            entry.entry_type == entry_type)
         .collect();
 }
 
