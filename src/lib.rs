@@ -30,7 +30,7 @@ fn parse_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
             if entry_path.is_file() {
                 match parse_file(&entry_path) {
                     Ok(entry) => desktop_entries.push(entry),
-                    Err(_) => ()
+                    Err(error) => println!("{:?}", error)
                 }
             }
         }
@@ -53,18 +53,17 @@ pub fn parse_file(file_path: &PathBuf) -> Result<DesktopEntry, &'static str> {
     let mut comment: Option<String> = None;
 
     for line in contents.lines() {
-        parse_if_starts_with(line, &mut name, "Name=");
-        if name.is_some() {
+        if parse_if_starts_with(line, &mut name, "Name=") {
             continue;
         }
 
-        parse_if_starts_with(line, &mut exec, "Exec=");
-        if exec.is_some() {
+
+        if parse_if_starts_with(line, &mut exec, "Exec=") {
             continue;
         }
 
-        parse_if_starts_with(line, &mut comment, "Comment=");
-        if comment.is_some() {
+
+        if parse_if_starts_with(line, &mut comment, "Comment=") {
             continue;
         }
 
@@ -75,7 +74,7 @@ pub fn parse_file(file_path: &PathBuf) -> Result<DesktopEntry, &'static str> {
             Some(val) => {
                 entry_type = match parse_entry_type(&val) {
                     Ok(val) => Some(val),
-                    Err(err) => panic!(err)
+                    Err(_) => None
                 };
             }
             _ => ()
@@ -94,7 +93,7 @@ pub fn parse_file(file_path: &PathBuf) -> Result<DesktopEntry, &'static str> {
         name: name.unwrap_or("NO NAME".to_string()),
         entry_type: entry_type.unwrap_or(EntryType::Directory),
         exec,
-        comment
+        comment,
     })
 }
 
