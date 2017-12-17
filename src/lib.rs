@@ -30,7 +30,7 @@ fn parse_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
             if entry_path.is_file() {
                 match parse_file(&entry_path) {
                     Ok(entry) => desktop_entries.push(entry),
-                    Err(error) => println!("{:?}", error)
+                    Err(_) => ()
                 }
             }
         }
