@@ -7,11 +7,11 @@ use std::fs::File;
 use self::desktop_entry::{DesktopEntry, EntryType};
 use self::parse::{parse_entry_type, parse_if_starts_with};
 
-pub fn get_entries_in_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
+pub fn get_entries_in_dirs<'a, 'b>(paths: &'a [&'b str]) -> Vec<DesktopEntry> {
     return parse_dirs(paths);
 }
 
-pub fn get_entries_in_dirs_filtered_by(paths: &'static [&'static str], entry_type: EntryType) -> Vec<DesktopEntry> {
+pub fn get_entries_in_dirs_filtered_by<'a, 'b>(paths: &'a [&'b str], entry_type: EntryType) -> Vec<DesktopEntry> {
     return parse_dirs(paths)
         .into_iter()
         .filter(|entry: &DesktopEntry|
@@ -19,7 +19,7 @@ pub fn get_entries_in_dirs_filtered_by(paths: &'static [&'static str], entry_typ
         .collect();
 }
 
-fn parse_dirs(paths: &'static [&'static str]) -> Vec<DesktopEntry> {
+fn parse_dirs<'a, 'b>(paths: &'a [&'b str]) -> Vec<DesktopEntry> {
     let mut desktop_entries: Vec<DesktopEntry> = Vec::new();
 
     for path in paths {
