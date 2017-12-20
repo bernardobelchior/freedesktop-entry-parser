@@ -23,16 +23,21 @@ fn parse_dirs<'a, 'b>(paths: &'a [&'b str]) -> Vec<DesktopEntry> {
     let mut desktop_entries: Vec<DesktopEntry> = Vec::new();
 
     for path in paths {
-        let dirs = Path::new(path).read_dir().expect("read_dir call failed");
-
-        for entry in dirs {
-            let entry_path = entry.expect("entry in dirs failed").path();
-            if entry_path.is_file() {
-                match parse_file(&entry_path) {
-                    Ok(entry) => desktop_entries.push(entry),
-                    Err(_) => ()
-                }
-            }
+        match Path::new(path).read_dir() {
+           Ok(dirs)  => {
+               for entry in dirs {
+                   let entry_path = entry.expect("entry in dirs failed").path();
+                   if entry_path.is_file() {
+                       match parse_file(&entry_path) {
+                           Ok(entry) => desktop_entries.push(entry),
+                           Err(_) => ()
+                       }
+                   }
+               }
+           }
+           Err(err) => {
+               println!("'{}': {}", path, err.to_string());
+           }
         }
     }
 
